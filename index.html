@@ -1751,7 +1751,10 @@ function doFinish() {
   
   // Build review list
   buildReview(answered.filter(a => !a.isCorrect).map((a, _) => a), false);
-  
+  document.getElementById('review-list').classList.remove('open');
+
+const arrow = document.getElementById('review-arrow');
+if (arrow) arrow.textContent = '▼';
   showScreen('results');
 }
 
@@ -1764,7 +1767,7 @@ function buildReview(wrongAnswers, showAll) {
     const isCorrect = ans?.isCorrect && !ans._pending;
     const wasAnswered = ans && !ans._pending;
     
-    if (!wasAnswered) return; // skip unanswered in review unless showing all
+    if (!showAll && !wasAnswered) return; // skip unanswered in review unless showing all
     
     const item = document.createElement('div');
     item.className = 'review-item ' + (isCorrect ? 'correct-r' : 'wrong-r');
@@ -1852,18 +1855,16 @@ function confirmExit() {
   document.getElementById('confirm-dialog').classList.add('active');
 }
 
-function closeDialog() {
+function dialogConfirm() {
+  const action = dialogAction;
+
   document.getElementById('confirm-dialog').classList.remove('active');
   dialogAction = null;
-}
 
-function dialogConfirm() {
-  closeDialog();
-  if (dialogAction === 'exit' || dialogAction === 'finish') {
+  if (action === 'exit' || action === 'finish') {
     doFinish();
   }
 }
-
 // ════════════════════════════════════════════════════════════
 //  SCREEN SWITCHING
 // ════════════════════════════════════════════════════════════
